@@ -159,10 +159,9 @@ function devServerFnErrorLogger() {
   };
 }
 
-export default defineConfig(({ command }) => {
-  // Use Cloudflare Workers plugin for builds (produces worker output)
-  // Skip for dev server (command=serve) since workerd runtime isn't available
-  const useCloudflare = command === "build";
+export default defineConfig(({ command, mode }) => {
+  // Use Cloudflare Workers plugin only if mode is 'cloudflare' and we are building
+  const useCloudflare = command === "build" && mode === "cloudflare";
 
   return {
     server: {

@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "vite build && node -e \"const fs=require('fs'); if(fs.existsSync('dist/server')){ fs.renameSync('dist/server', 'dist/client/_worker.js'); }\"",
+    "build": "vite build",
+    "build:cloudflare": "vite build --mode cloudflare && node -e \"const fs=require('fs'); if(fs.existsSync('dist/server')){ fs.renameSync('dist/server', 'dist/client/_worker.js'); }\"",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint ."
