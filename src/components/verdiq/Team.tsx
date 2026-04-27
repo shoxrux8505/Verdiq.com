@@ -61,7 +61,7 @@ export function Team() {
                 <span>Tashkent, Uzbekistan</span>
               </div>
             </div>
-          </div>
+          </div>    
         </div>
       </Reveal>
 
