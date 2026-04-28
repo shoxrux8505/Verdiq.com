@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "build:vercel": "NITRO_PRESET=vercel vite build",
-    "build:cloudflare": "vite build --mode cloudflare && node -e \"const fs=require('fs'); if(fs.existsSync('dist/server')){ fs.renameSync('dist/server', 'dist/client/_worker.js'); }\"",
+    "build:vercel": "cross-env NITRO_PRESET=vercel vite build",
+    "build:cloudflare": "cross-env NITRO_PRESET=cloudflare vite build --mode cloudflare && node -e \"const fs=require('fs'); if(fs.existsSync('dist/server')){ fs.renameSync('dist/server', 'dist/client/_worker.js'); }\"",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint ."
@@ -78,6 +78,7 @@
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^5.0.4",
+    "cross-env": "^10.1.0",
     "eslint": "^9.32.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
