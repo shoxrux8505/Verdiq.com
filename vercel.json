@@ -1,5 +1,4 @@
 {
   "buildCommand": "npm run build:vercel",
-  "framework": null,
   "installCommand": "npm install"
 }
