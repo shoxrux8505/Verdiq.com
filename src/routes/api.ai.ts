@@ -194,7 +194,6 @@ export const Route = createFileRoute("/api/ai")({
             if (messages.length === 0) return errorResponse(400, "messages required");
 
             const resp = await callGateway({
-              model: "google/gemini-3-flash-preview",
               messages: [{ role: "system", content: SYSTEM_CHAT }, ...messages],
               stream: true,
             });
@@ -207,7 +206,7 @@ export const Route = createFileRoute("/api/ai")({
               return errorResponse(500, "AI service is temporarily unavailable. Please try again.");
             }
 
-            return new Response(resp.body, { headers: { "Content-Type": "text/event-stream" } });
+            return new Response(toOpenAiSseStream(resp.body), { headers: { "Content-Type": "text/event-stream" } });
           }
 
           if (payload.mode === "score") {
@@ -228,7 +227,6 @@ export const Route = createFileRoute("/api/ai")({
               .join("\n")}`;
 
             const resp = await callGateway({
-              model: "google/gemini-3-flash-preview",
               messages: [
                 { role: "system", content: SYSTEM_SCORE },
                 { role: "user", content: userPrompt },
@@ -259,19 +257,16 @@ export const Route = createFileRoute("/api/ai")({
                               impact: { type: "string", enum: ["high", "medium", "low"] },
                             },
                             required: ["title", "detail", "pillar", "impact"],
-                            additionalProperties: false,
                           },
                           minItems: 3,
                           maxItems: 5,
                         },
                       },
                       required: ["overall", "environmental", "social", "governance", "tier", "summary", "recommendations"],
-                      additionalProperties: false,
                     },
                   },
                 },
               ],
-              tool_choice: { type: "function", function: { name: "return_esg_assessment" } },
             });
 
             if (resp.status === 429) return errorResponse(429, "Rate limit exceeded. Please try again shortly.");
@@ -283,13 +278,12 @@ export const Route = createFileRoute("/api/ai")({
             }
 
             const data = await resp.json();
-            const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
-            if (!toolCall?.function?.arguments) {
-              console.error("No tool call returned", JSON.stringify(data).slice(0, 500));
+            const fnCall = data?.candidates?.[0]?.content?.parts?.find((p: { functionCall?: { args: unknown } }) => p.functionCall)?.functionCall;
+            if (!fnCall?.args) {
+              console.error("No function call returned", JSON.stringify(data).slice(0, 500));
               return errorResponse(500, "AI did not return a structured assessment");
             }
-            const result = JSON.parse(toolCall.function.arguments);
-            return new Response(JSON.stringify(result), {
+            return new Response(JSON.stringify(fnCall.args), {
               headers: { "Content-Type": "application/json" },
             });
           }
