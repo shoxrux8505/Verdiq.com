@@ -212,6 +212,12 @@ export const Route = createFileRoute("/api/ai")({
           } catch {
             return errorResponse(400, "Invalid JSON body.");
           }
+          // Refuse to use a leaked/known-bad provider key, regardless of mode.
+          const configuredKey = process.env.GEMINI_API_KEY;
+          if (configuredKey) {
+            const blockMsg = await assertKeyUsable(configuredKey);
+            if (blockMsg) return errorResponse(503, blockMsg);
+          }
 
           if (payload.mode === "chat") {
             const rawMessages = Array.isArray(payload.messages) ? payload.messages : [];
