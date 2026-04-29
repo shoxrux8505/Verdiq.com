@@ -52,13 +52,87 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
-async function callGateway(body: object) {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) throw new Error("OPENAI_API_KEY is not configured");
-  return fetch("https://api.openai.com/v1/chat/completions", {
+const GEMINI_MODEL = "gemini-2.0-flash";
+
+async function callGateway(body: {
+  messages: ChatMessage[];
+  stream?: boolean;
+  tools?: unknown[];
+  tool_choice?: unknown;
+}) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new Error("GEMINI_API_KEY is not configured");
+
+  // Translate OpenAI-style payload → Gemini generateContent payload
+  const systemMsgs = body.messages.filter((m) => m.role === "system");
+  const convoMsgs = body.messages.filter((m) => m.role !== "system");
+
+  const geminiBody: Record<string, unknown> = {
+    contents: convoMsgs.map((m) => ({
+      role: m.role === "assistant" ? "model" : "user",
+      parts: [{ text: m.content }],
+    })),
+  };
+  if (systemMsgs.length) {
+    geminiBody.systemInstruction = { parts: [{ text: systemMsgs.map((m) => m.content).join("\n\n") }] };
+  }
+  if (body.tools) {
+    // Gemini function-calling shape
+    const fnDecls = (body.tools as Array<{ function: { name: string; description?: string; parameters: unknown } }>)
+      .map((t) => ({
+        name: t.function.name,
+        description: t.function.description,
+        parameters: t.function.parameters,
+      }));
+    geminiBody.tools = [{ functionDeclarations: fnDecls }];
+    geminiBody.toolConfig = { functionCallingConfig: { mode: "ANY" } };
+  }
+
+  const action = body.stream ? "streamGenerateContent?alt=sse&" : "generateContent?";
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:${action}key=${encodeURIComponent(apiKey)}`;
+  return fetch(url, {
     method: "POST",
-    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify(body),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(geminiBody),
+  });
+}
+
+// Transform Gemini SSE stream → OpenAI-style SSE the frontend already parses.
+function toOpenAiSseStream(geminiStream: ReadableStream<Uint8Array>): ReadableStream<Uint8Array> {
+  const reader = geminiStream.getReader();
+  const decoder = new TextDecoder();
+  const encoder = new TextEncoder();
+  let buf = "";
+
+  return new ReadableStream<Uint8Array>({
+    async pull(controller) {
+      const { done, value } = await reader.read();
+      if (done) {
+        controller.enqueue(encoder.encode("data: [DONE]\n\n"));
+        controller.close();
+        return;
+      }
+      buf += decoder.decode(value, { stream: true });
+      let idx: number;
+      while ((idx = buf.indexOf("\n")) !== -1) {
+        const line = buf.slice(0, idx).replace(/\r$/, "");
+        buf = buf.slice(idx + 1);
+        if (!line.startsWith("data: ")) continue;
+        const json = line.slice(6).trim();
+        if (!json) continue;
+        try {
+          const parsed = JSON.parse(json);
+          const text = parsed?.candidates?.[0]?.content?.parts?.map((p: { text?: string }) => p.text ?? "").join("") ?? "";
+          if (text) {
+            const chunk = { choices: [{ delta: { content: text } }] };
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify(chunk)}\n\n`));
+          }
+        } catch {
+          // skip malformed line
+        }
+      }
+    },
+    cancel() { reader.cancel(); },
   });
 }
 
@@ -120,7 +194,6 @@ export const Route = createFileRoute("/api/ai")({
             if (messages.length === 0) return errorResponse(400, "messages required");
 
             const resp = await callGateway({
-              model: "google/gemini-3-flash-preview",
               messages: [{ role: "system", content: SYSTEM_CHAT }, ...messages],
               stream: true,
             });
@@ -133,7 +206,7 @@ export const Route = createFileRoute("/api/ai")({
               return errorResponse(500, "AI service is temporarily unavailable. Please try again.");
             }
 
-            return new Response(resp.body, { headers: { "Content-Type": "text/event-stream" } });
+            return new Response(toOpenAiSseStream(resp.body), { headers: { "Content-Type": "text/event-stream" } });
           }
 
           if (payload.mode === "score") {
@@ -154,7 +227,6 @@ export const Route = createFileRoute("/api/ai")({
               .join("\n")}`;
 
             const resp = await callGateway({
-              model: "google/gemini-3-flash-preview",
               messages: [
                 { role: "system", content: SYSTEM_SCORE },
                 { role: "user", content: userPrompt },
@@ -185,19 +257,16 @@ export const Route = createFileRoute("/api/ai")({
                               impact: { type: "string", enum: ["high", "medium", "low"] },
                             },
                             required: ["title", "detail", "pillar", "impact"],
-                            additionalProperties: false,
                           },
                           minItems: 3,
                           maxItems: 5,
                         },
                       },
                       required: ["overall", "environmental", "social", "governance", "tier", "summary", "recommendations"],
-                      additionalProperties: false,
                     },
                   },
                 },
               ],
-              tool_choice: { type: "function", function: { name: "return_esg_assessment" } },
             });
 
             if (resp.status === 429) return errorResponse(429, "Rate limit exceeded. Please try again shortly.");
@@ -209,13 +278,12 @@ export const Route = createFileRoute("/api/ai")({
             }
 
             const data = await resp.json();
-            const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
-            if (!toolCall?.function?.arguments) {
-              console.error("No tool call returned", JSON.stringify(data).slice(0, 500));
+            const fnCall = data?.candidates?.[0]?.content?.parts?.find((p: { functionCall?: { args: unknown } }) => p.functionCall)?.functionCall;
+            if (!fnCall?.args) {
+              console.error("No function call returned", JSON.stringify(data).slice(0, 500));
               return errorResponse(500, "AI did not return a structured assessment");
             }
-            const result = JSON.parse(toolCall.function.arguments);
-            return new Response(JSON.stringify(result), {
+            return new Response(JSON.stringify(fnCall.args), {
               headers: { "Content-Type": "application/json" },
             });
           }
