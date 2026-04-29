@@ -54,6 +54,38 @@ function checkRateLimit(ip: string): boolean {
 
 const GEMINI_MODEL = "gemini-2.0-flash";
 
+// SHA-256 hashes of API keys known to be leaked (e.g. pasted in chat,
+// committed to public repos). If the configured GEMINI_API_KEY matches
+// any of these, we refuse to use it and log a clear admin warning.
+// Storing hashes — not the raw keys — keeps this file safe to commit.
+const LEAKED_KEY_HASHES = new Set<string>([
+  "4fb27427753b3cd88c3e803da8f38935a74c48891307d631b266c1b9e01dc5b2",
+  "fea8c4a473f85193458848afe080a9352ded894984fb9a3b3fbd084b511cfb45",
+]);
+
+let leakWarningLogged = false;
+async function isKeyLeaked(key: string): Promise<boolean> {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(key));
+  const hex = Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
+  return LEAKED_KEY_HASHES.has(hex);
+}
+
+async function assertKeyUsable(apiKey: string): Promise<string | null> {
+  if (await isKeyLeaked(apiKey)) {
+    if (!leakWarningLogged) {
+      console.error(
+        "[SECURITY] GEMINI_API_KEY matches a known-leaked key. " +
+          "Refusing to call the AI provider. " +
+          "ROTATE THIS KEY IMMEDIATELY in Google AI Studio (https://aistudio.google.com/apikey) " +
+          "and update the GEMINI_API_KEY secret in workspace settings.",
+      );
+      leakWarningLogged = true;
+    }
+    return "AI provider key has been disabled by an administrator. Please rotate the key and try again.";
+  }
+  return null;
+}
+
 async function callGateway(body: {
   messages: ChatMessage[];
   stream?: boolean;
