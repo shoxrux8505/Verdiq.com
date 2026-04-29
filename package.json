@@ -7,7 +7,7 @@
     "dev": "vite dev",
     "build": "vite build",
     "build:vercel": "cross-env NITRO_PRESET=vercel vite build",
-    "build:cloudflare": "cross-env NITRO_PRESET=cloudflare vite build --mode cloudflare && node -e \"const fs=require('fs'); const path=require('path'); const serverAssets='dist/server/assets'; if(fs.existsSync(serverAssets)){ const worker=fs.readdirSync(serverAssets).find(f=>f.startsWith('worker-entry-') && f.endsWith('.js')); if(worker){ fs.copyFileSync(path.join(serverAssets, worker), 'dist/client/_worker.js'); console.log('Successfully created dist/client/_worker.js'); } }\"",
+    "build:cloudflare": "cross-env NITRO_PRESET=cloudflare vite build --mode cloudflare && node -e \"const fs=require('fs'); const path=require('path'); const serverDir='dist/server'; const serverAssets=path.join(serverDir, 'assets'); let workerPath; if(fs.existsSync(serverAssets)){ const workerFile=fs.readdirSync(serverAssets).find(f=>f.startsWith('worker-entry-') && f.endsWith('.js')); if(workerFile) workerPath=path.join(serverAssets, workerFile); } if(!workerPath && fs.existsSync(path.join(serverDir, 'server.js'))) workerPath=path.join(serverDir, 'server.js'); if(workerPath){ fs.copyFileSync(workerPath, 'dist/client/_worker.js'); console.log('Successfully created dist/client/_worker.js from ' + workerPath); } else { console.error('Could not find server entry point'); process.exit(1); }\"",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint ."
