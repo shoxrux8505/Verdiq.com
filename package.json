@@ -10,7 +10,9 @@
     "build:cloudflare": "cross-env NITRO_PRESET=cloudflare vite build --mode cloudflare && node -e \"const fs=require('fs'); const path=require('path'); const serverAssets='dist/server/assets'; if(fs.existsSync(serverAssets)){ const worker=fs.readdirSync(serverAssets).find(f=>f.startsWith('worker-entry-') && f.endsWith('.js')); if(worker){ fs.copyFileSync(path.join(serverAssets, worker), 'dist/client/_worker.js'); console.log('Successfully created dist/client/_worker.js'); } }\"",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test:api": "bun tests/run-api-ai-tests.ts",
+    "test:api:only": "bun test tests/api-ai-validation.test.ts"
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.25.5",
