@@ -5,21 +5,23 @@ import { toast } from "sonner";
 import { TestModeModal } from "./TestModeModal";
 
 interface Recommendation {
-  title: string;
-  detail: string;
-  pillar: "E" | "S" | "G";
-  impact: "high" | "medium" | "low";
+  readonly title: string;
+  readonly detail: string;
+  readonly pillar: "E" | "S" | "G";
+  readonly impact: "high" | "medium" | "low";
 }
 
 interface ScoreResult {
-  overall: number;
-  environmental: number;
-  social: number;
-  governance: number;
-  tier: string;
-  summary: string;
-  recommendations: Recommendation[];
+  readonly overall: number;
+  readonly environmental: number;
+  readonly social: number;
+  readonly governance: number;
+  readonly tier: string;
+  readonly summary: string;
+  readonly recommendations: readonly Recommendation[];
+  readonly isDemo?: boolean;
 }
+
 
 type Stage = "intro" | "questions" | "loading" | "result";
 
@@ -69,9 +71,10 @@ export function EsgCalculator() {
       setResult(data);
       setStage("result");
     } catch (e) {
-      console.error(e);
-      setIsErrorOpen(true);
-      setStage("questions");
+      console.error("AI Calculator failed, falling back to static demo:", e);
+      setResult(t.demo.calcStatic);
+      setStage("result");
+      toast.info(t.demo.calcDemoToast);
     }
   };
 
@@ -264,7 +267,12 @@ function ResultView({ result, reset }: { result: ScoreResult; reset: () => void 
         </div>
       </div>
 
-      <div className="flex justify-center">
+      <div className="flex flex-col items-center gap-4">
+        {result.isDemo && (
+          <div className="rounded-full bg-cyan-glow/10 px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-cyan-glow border border-cyan-glow/20">
+            {t.demo.calcDemoBadge}
+          </div>
+        )}
         <button
           type="button"
           onClick={reset}

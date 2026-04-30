@@ -38,6 +38,23 @@ export interface Translation {
     calcPillarE: string; calcPillarS: string; calcPillarG: string;
     calcQuestion: string; calcOf: string;
     calcQs: { q: string; opts: { label: string; value: string }[] }[];
+    calcStatic: {
+      overall: number;
+      environmental: number;
+      social: number;
+      governance: number;
+      tier: string;
+      summary: string;
+      isDemo: boolean;
+      readonly recommendations: readonly {
+        readonly pillar: "E" | "S" | "G";
+        readonly title: string;
+        readonly detail: string;
+        readonly impact: "high" | "medium" | "low";
+      }[];
+    };
+    calcDemoBadge: string;
+    calcDemoToast: string;
   };
   chatbot: Record<string, string>;
 }
@@ -264,11 +281,35 @@ const _translations = {
           { label: "Not produced", value: "not produced" },
         ]},
       ],
+      calcStatic: {
+        overall: 72,
+        environmental: 68,
+        social: 75,
+        governance: 73,
+        tier: "B",
+        summary: "Your company shows strong ESG foundations with particular strength in Social initiatives, but there is clear room for improvement in Environmental data tracking.",
+        isDemo: true,
+        recommendations: [
+          { pillar: "E", title: "Carbon Footprint Baseline", detail: "Begin tracking Scope 1 and 2 emissions to establish a baseline for future reduction targets.", impact: "high" },
+          { pillar: "S", title: "DEI Policy Formalization", detail: "Document your existing diversity and inclusion practices into a formal policy to attract top talent.", impact: "medium" },
+          { pillar: "G", title: "Board ESG Oversight", detail: "Assign a specific board member or committee to oversee ESG risks and opportunities.", impact: "high" },
+          { pillar: "E", title: "Supply Chain Audit", detail: "Review your top 5 suppliers for their environmental commitments to reduce Scope 3 risks.", impact: "low" }
+        ] as const
+      },
+      calcDemoBadge: "Demo Mode · Static Example Result",
+      calcDemoToast: "Using demo mode: AI service is currently unavailable.",
     },
     chatbot: {
-      "What is ESG?": "ESG stands for Environmental, Social, and Governance — the three pillars used to evaluate a company's sustainability and ethical impact. Verdiq scores each pillar and combines them into a unified ESG readiness score.",
-      "How can I improve my ESG score?": "Three high-leverage moves: (1) document your environmental policies and Scope 1–2 emissions, (2) formalize your governance structure including a board charter, and (3) publish a clear DEI and supplier code of conduct. Verdiq's AI advisor will rank these by impact for your specific profile.",
-      "What are the biggest risks in my current sustainability profile?": "Based on the most common patterns we see: (1) missing emissions baseline, (2) no formal whistleblower channel, and (3) limited supplier ESG screening. These are the first red flags investors flag during diligence.",
+      "esg": "ESG stands for **Environmental, Social, and Governance**. It is a framework used to assess a company's impact on the world and its sustainability. At Verdiq, we help you simplify this complex world through automation.",
+      "cost": "Verdiq is currently in its **BETA phase**. You can use our ESG Calculator and AI Advisor for free to explore how we can help your business grow sustainably.",
+      "team": "The Verdiq team is composed of ESG specialists, data scientists, and engineers dedicated to making sustainability reporting accessible for everyone.",
+      "roadmap": "Our roadmap includes deep integration with supply chain data, automated carbon footprint calculations, and official certification preparation modules.",
+      "security": "We take your data seriously. All ESG assessments are handled securely, and our AI is designed to help you organize data without exposing sensitive corporate secrets.",
+      "calculator": "Our ESG Calculator uses the **GRI and SASB frameworks** to give you a readiness score. You can find it right here on the landing page!",
+      "compliance": "Verdiq helps you prepare for global regulations like the **CSRD (EU)** and **SEC climate disclosures (US)** by identifying gaps in your current reporting.",
+      "benefit": "Companies with high ESG scores often see **lower capital costs**, better talent retention, and higher operational efficiency.",
+      "verdiq": "Verdiq is your **AI-powered ESG co-pilot**. We automate the heavy lifting of sustainability reporting so you can focus on building a better company.",
+      "startup": "For startups, ESG is a competitive advantage. It helps you attract VC funding and meet the procurement requirements of large enterprise clients."
     },
   },
 
@@ -493,11 +534,35 @@ const _translations = {
           { label: "Не публикуем", value: "not produced" },
         ]},
       ],
+      calcStatic: {
+        overall: 72,
+        environmental: 68,
+        social: 75,
+        governance: 73,
+        tier: "B",
+        summary: "Ваша компания демонстрирует прочный ESG-фундамент, особенно в социальных инициативах, однако есть возможности для улучшения в отслеживании экологических данных.",
+        isDemo: true,
+        recommendations: [
+          { pillar: "E", title: "Базовый уровень углеродного следа", detail: "Начните отслеживать выбросы Scope 1 и 2, чтобы установить базу для будущих целей по сокращению.", impact: "high" },
+          { pillar: "S", title: "Формализация политики DEI", detail: "Оформите существующие практики инклюзивности в официальную политику для привлечения лучших талантов.", impact: "medium" },
+          { pillar: "G", title: "ESG-надзор на уровне совета", detail: "Назначьте ответственного члена совета или комитет для мониторинга ESG-рисков.", impact: "high" },
+          { pillar: "E", title: "Аудит цепочки поставок", detail: "Проверьте топ-5 поставщиков на соответствие экологическим нормам для снижения рисков Scope 3.", impact: "low" }
+        ] as const
+      },
+      calcDemoBadge: "Демо-режим · Пример результата",
+      calcDemoToast: "Используется демо-режим: ИИ-сервис временно недоступен.",
     },
     chatbot: {
-      "Что такое ESG?": "ESG — это Environmental, Social, Governance: три столпа оценки устойчивости и этичности компании. Verdiq оценивает каждый и собирает их в единый показатель ESG-готовности.",
-      "Как улучшить мой ESG-скор?": "Три рычага с большим эффектом: (1) задокументируйте экологические политики и выбросы Scope 1–2, (2) формализуйте структуру управления, включая устав совета, (3) опубликуйте чёткий кодекс DEI и поставщиков. ИИ-советник Verdiq ранжирует их по влиянию для вашего профиля.",
-      "Какие самые большие риски у моего профиля?": "На основе паттернов: (1) отсутствие базы выбросов, (2) нет формального канала whistleblower, (3) ограниченный ESG-скрининг поставщиков. Это первые красные флаги на дью дилидженсе.",
+      "esg": "ESG означает **Экология (Environmental), Социальная ответственность (Social) и Корпоративное управление (Governance)**. Это система оценки устойчивости компании. В Verdiq мы помогаем упростить этот процесс с помощью автоматизации.",
+      "стоимость": "Verdiq сейчас находится в стадии **БЕТА-тестирования**. Вы можете бесплатно использовать наш ESG-калькулятор и ИИ-советника.",
+      "команда": "Команда Verdiq состоит из экспертов по ESG, аналитиков данных и инженеров, стремящихся сделать ESG-отчетность доступной для всех.",
+      "планы": "Наша дорожная карта включает глубокую интеграцию с цепочками поставок, автоматический расчет углеродного следа и модули подготовки к сертификации.",
+      "безопасность": "Мы серьезно относимся к вашим данным. Все оценки ESG проводятся безопасно, а наш ИИ помогает организовать данные, не раскрывая корпоративные секреты.",
+      "калькулятор": "Наш ESG-калькулятор использует фреймворки **GRI и SASB** для оценки вашей готовности. Вы можете найти его прямо на этой странице!",
+      "комплаенс": "Verdiq помогает подготовиться к глобальным нормам, таким как **CSRD (ЕС)** и раскрытие климатических данных **SEC (США)**.",
+      "выгода": "Компании с высокими показателями ESG часто получают **более дешевый капитал**, лучше удерживают таланты и работают эффективнее.",
+      "verdiq": "Verdiq — это ваш **ИИ-помощник по ESG**. Мы берем на себя сложную работу по отчетности, чтобы вы могли сосредоточиться на развитии бизнеса.",
+      "стартап": "Для стартапов ESG — это конкурентное преимущество. Это помогает привлекать инвестиции и соответствовать требованиям крупных клиентов."
     },
   },
 
@@ -722,11 +787,35 @@ const _translations = {
           { label: "Chop etilmaydi", value: "not produced" },
         ]},
       ],
+      calcStatic: {
+        overall: 72,
+        environmental: 68,
+        social: 75,
+        governance: 73,
+        tier: "B",
+        summary: "Sizning kompaniyangiz kuchli ESG poydevorini ko'rsatmoqda, ayniqsa ijtimoiy tashabbuslarda, lekin ekologik ma'lumotlarni kuzatishda yaxshilanish imkoniyatlari mavjud.",
+        isDemo: true,
+        recommendations: [
+          { pillar: "E", title: "Uglerod chiqindilari asosi", detail: "Kelajakdagi emissiyalarni kamaytirish maqsadlarini belgilash uchun Scope 1 va 2 emissiyalarini kuzatishni boshlang.", impact: "high" },
+          { pillar: "S", title: "DEI siyosatini rasmiylashtirish", detail: "Eng yaxshi iqtidorlarni jalb qilish uchun mavjud inklyuzivlik amaliyotlarini rasmiy siyosatga aylantiring.", impact: "medium" },
+          { pillar: "G", title: "Kengash darajasidagi ESG nazorati", detail: "ESG risklarini kuzatish uchun kengashning maxsus a'zosi yoki qo'mitasini tayinlang.", impact: "high" },
+          { pillar: "E", title: "Ta'minot zanjiri auditi", detail: "Scope 3 risklarini kamaytirish uchun asosiy 5 ta yetkazib beruvchingizning ekologik majburiyatlarini tekshiring.", impact: "low" }
+        ] as const
+      },
+      calcDemoBadge: "Demo rejimi · Namuna natija",
+      calcDemoToast: "Demo rejimi ishlatilmoqda: AI xizmati vaqtincha ishlamayapti.",
     },
     chatbot: {
-      "ESG nima?": "ESG — bu Environmental, Social, Governance: kompaniya barqarorligi va etikasini baholashning uch ustuni. Verdiq har birini baholaydi va ularni yagona ESG tayyorgarlik ko'rsatkichiga birlashtiradi.",
-      "ESG ballimni qanday yaxshilash mumkin?": "Uchta yuqori ta'sirli harakat: (1) ekologik siyosatlar va Scope 1–2 emissiyalarni hujjatlashtirish, (2) boshqaruv tuzilishini, jumladan kengash nizomini rasmiylashtirish, (3) DEI va yetkazib beruvchilar kodeksini chiqarish. Verdiq AI maslahatchisi ularni profilingizga ko'ra ta'sirga qarab tartiblaydi.",
-      "Mening profilimning eng katta risklari nimada?": "Eng keng tarqalgan naqshlar: (1) emissiya bazasi yo'q, (2) rasmiy whistleblower kanali yo'q, (3) yetkazib beruvchilarning ESG skriningi cheklangan. Bular due diligence vaqtida investorlar belgilaydigan birinchi qizil bayroqlar.",
+      "esg": "ESG — **Environmental (Atrof-muhit), Social (Ijtimoiy) va Governance (Boshqaruv)** deganidir. Bu kompaniyaning barqarorligini baholash tizimi. Verdiq-da biz buni avtomatlashtirish orqali soddalashtiramiz.",
+      "narx": "Verdiq hozirda **BETA bosqichida**. Siz bizning ESG kalkulyatorimiz va AI maslahatchimizdan bepul foydalanishingiz mumkin.",
+      "jamoa": "Verdiq jamoasi ESG mutaxassislari, ma'lumotlar tahlilchilari va muhandislardan iborat bo'lib, ESG hisobotlarini hamma uchun ochiq qilishga intiladi.",
+      "rejalar": "Bizning yo'l xaritamiz ta'minot zanjiri integratsiyasi, uglerod chiqindilarini avtomatik hisoblash va sertifikatlash modullarini o'z ichiga oladi.",
+      "xavfsizlik": "Biz sizning ma'lumotlaringizga jiddiy qaraymiz. Barcha ESG baholashlari xavfsiz amalga oshiriladi va korporativ sirlarni ochmagan holda ishlaydi.",
+      "kalkulyator": "Bizning ESG kalkulyatorimiz **GRI va SASB** standartlaridan foydalanadi. Uni aynan shu sahifada topishingiz mumkin!",
+      "komplayens": "Verdiq sizni **CSRD (Yevropa)** va **SEC (AQSH)** kabi global qoidalarga tayyorlanishingizga yordam beradi.",
+      "foyda": "Yuqori ESG balliga ega kompaniyalar ko'pincha **arzonroq kapital** oladilar, xodimlarni yaxshiroq ushlab turadilar va samaraliroq ishlaydilar.",
+      "verdiq": "Verdiq — bu sizning **AI-yordamchingiz**. Biz hisobot berishning murakkab ishlarini o'z bo'ynimizga olamiz, shunda siz biznesni rivojlantirishga e'tibor qaratishingiz mumkin.",
+      "startap": "Startaplar uchun ESG — bu raqobatbardosh ustunlik. Bu investitsiyalarni jalb qilishga va yirik mijozlar talablariga javob berishga yordam beradi."
     },
   },
 };

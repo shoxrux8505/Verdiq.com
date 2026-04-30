@@ -11,6 +11,7 @@ interface ChatMsg {
 }
 
 export function AiChatbot() {
+
   const { t } = useI18n();
   const [messages, setMessages] = useState<ChatMsg[]>([]);
   const [input, setInput] = useState("");
@@ -31,6 +32,19 @@ export function AiChatbot() {
     setMessages(nextMessages);
     setInput("");
     setStreaming(true);
+
+    // 1. Try local FAQ matching first
+    const lower = trimmed.toLowerCase();
+    const matchKey = Object.keys(t.chatbot).find(key => lower.includes(key.toLowerCase()));
+    
+    if (matchKey) {
+      // Small delay to simulate "thinking"
+      setTimeout(() => {
+        setMessages([...nextMessages, { role: "assistant", content: t.chatbot[matchKey] }]);
+        setStreaming(false);
+      }, 600);
+      return;
+    }
 
     try {
       const resp = await fetch("/api/ai", {

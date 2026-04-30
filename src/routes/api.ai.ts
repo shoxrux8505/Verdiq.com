@@ -52,7 +52,7 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
-const GEMINI_MODEL = "gemini-2.0-flash";
+const GEMINI_MODEL = "gemini-3-flash-preview";
 
 // SHA-256 hashes of API keys known to be leaked (e.g. pasted in chat,
 // committed to public repos). If the configured GEMINI_API_KEY matches
@@ -75,9 +75,9 @@ async function assertKeyUsable(apiKey: string): Promise<string | null> {
     if (!leakWarningLogged) {
       console.error(
         "[SECURITY] GEMINI_API_KEY matches a known-leaked key. " +
-          "Refusing to call the AI provider. " +
-          "ROTATE THIS KEY IMMEDIATELY in Google AI Studio (https://aistudio.google.com/apikey) " +
-          "and update the GEMINI_API_KEY secret in workspace settings.",
+        "Refusing to call the AI provider. " +
+        "ROTATE THIS KEY IMMEDIATELY in Google AI Studio (https://aistudio.google.com/apikey) " +
+        "and update the GEMINI_API_KEY secret in workspace settings.",
       );
       leakWarningLogged = true;
     }
