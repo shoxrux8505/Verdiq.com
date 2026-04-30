@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import logoUrl from "@/assets/verdiq-logo.png";
+import logoUrl from "@/assets/verdiq-logo.webp";
 
 export function Logo({ className = "", imgClassName = "h-16 sm:h-20" }: { className?: string, imgClassName?: string }) {
   return (

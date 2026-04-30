@@ -87,7 +87,8 @@ function DemoPage() {
                     src={verdiqVideo}
                     controls
                     className="h-full w-full object-cover"
-                    preload="metadata"
+                    preload="none"
+                    playsInline
                   />
                 </div>
               </div>

@@ -183,7 +183,16 @@ export default defineConfig(({ command, mode }) => {
       devClientErrorLogger(),
       devServerFnErrorLogger(),
       ...(useCloudflare ? [cloudflare({ viteEnvironment: { name: "ssr" } })] : []),
-      tanstackStart(),
+      tanstackStart({
+        deployment: {
+          preset: "vercel",
+        },
+        prerender: {
+          enabled: true,
+          routes: ["/"],
+          crawlLinks: true,
+        },
+      }),
       viteReact(),
     ],
   };

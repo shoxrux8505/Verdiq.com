@@ -1,20 +1,22 @@
+import { lazy, Suspense } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Navbar } from "@/components/verdiq/Navbar";
 import { Footer } from "@/components/verdiq/Footer";
 import { GradientBlobs } from "@/components/verdiq/GradientBlobs";
 import { Hero } from "@/components/verdiq/Hero";
-import { ProblemSolution } from "@/components/verdiq/ProblemSolution";
-import { Product } from "@/components/verdiq/Product";
-import { Team } from "@/components/verdiq/Team";
-import { Stack } from "@/components/verdiq/Stack";
-import { Roadmap } from "@/components/verdiq/Roadmap";
-import { Plan } from "@/components/verdiq/Plan";
-import { Value } from "@/components/verdiq/Value";
-import { Contact } from "@/components/verdiq/Contact";
-import { FinalCTA } from "@/components/verdiq/FinalCTA";
-import { Showcase } from "@/components/verdiq/Showcase";
 import { SectionDivider } from "@/components/verdiq/Section";
-import { FloatingChatbot } from "@/components/verdiq/FloatingChatbot";
+
+const ProblemSolution = lazy(() => import("@/components/verdiq/ProblemSolution").then((m) => ({ default: m.ProblemSolution })));
+const Product = lazy(() => import("@/components/verdiq/Product").then((m) => ({ default: m.Product })));
+const Team = lazy(() => import("@/components/verdiq/Team").then((m) => ({ default: m.Team })));
+const Stack = lazy(() => import("@/components/verdiq/Stack").then((m) => ({ default: m.Stack })));
+const Roadmap = lazy(() => import("@/components/verdiq/Roadmap").then((m) => ({ default: m.Roadmap })));
+const Plan = lazy(() => import("@/components/verdiq/Plan").then((m) => ({ default: m.Plan })));
+const Value = lazy(() => import("@/components/verdiq/Value").then((m) => ({ default: m.Value })));
+const Contact = lazy(() => import("@/components/verdiq/Contact").then((m) => ({ default: m.Contact })));
+const FinalCTA = lazy(() => import("@/components/verdiq/FinalCTA").then((m) => ({ default: m.FinalCTA })));
+const Showcase = lazy(() => import("@/components/verdiq/Showcase").then((m) => ({ default: m.Showcase })));
+const FloatingChatbot = lazy(() => import("@/components/verdiq/FloatingChatbot").then((m) => ({ default: m.FloatingChatbot })));
 
 export const Route = createFileRoute("/")({
   component: HomePage,
@@ -44,26 +46,30 @@ function HomePage() {
       <main>
         <Hero />
         <SectionDivider />
-        <ProblemSolution />
-        <SectionDivider />
-        <Product />
-        <SectionDivider />
-        <Team />
-        <SectionDivider />
-        <Stack />
-        <SectionDivider />
-        <Roadmap />
-        <SectionDivider />
-        <Plan />
-        <SectionDivider />
-        <Value />
-        <SectionDivider />
-        <Contact />
-        <FinalCTA />
-        <Showcase />
+        <Suspense fallback={<div className="h-96 w-full animate-pulse bg-background/50" />}>
+          <ProblemSolution />
+          <SectionDivider />
+          <Product />
+          <SectionDivider />
+          <Team />
+          <SectionDivider />
+          <Stack />
+          <SectionDivider />
+          <Roadmap />
+          <SectionDivider />
+          <Plan />
+          <SectionDivider />
+          <Value />
+          <SectionDivider />
+          <Contact />
+          <FinalCTA />
+          <Showcase />
+        </Suspense>
       </main>
       <Footer />
-      <FloatingChatbot />
+      <Suspense fallback={null}>
+        <FloatingChatbot />
+      </Suspense>
     </div>
   );
 }

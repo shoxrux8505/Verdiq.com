@@ -9,8 +9,8 @@ import {
 } from "@/components/ui/carousel";
 import { Reveal } from "./Reveal";
 import { OrbitVector, DotsVector } from "./SectionVectors";
-import showcase1 from "@/assets/showcase-1.png";
-import showcase2 from "@/assets/showcase-2.png";
+import showcase1 from "@/assets/showcase-1.webp";
+import showcase2 from "@/assets/showcase-2.webp";
 
 const slides = [
   { src: showcase1, alt: "Verdiq product overview" },
