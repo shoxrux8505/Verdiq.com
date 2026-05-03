@@ -200,7 +200,7 @@ const _translations = {
       protoTitle: "Prototype & Access",
       protoLinks: [
         { t: "Live Prototype", d: "Interact with the Verdiq prototype" },
-        { t: "Project Concept", d: "Download the official PDF concept", href: "/VERDIQ LOYIHASI RASMIY KONSEPSIYASI.pdf" },
+        { t: "Project Concept", d: "Download the official PDF concept", href: "https://drive.google.com/file/d/1djI5bsQANg_6eoLTA7Vyl5g7mOlZcLu0/view?usp=sharing" },
         { t: "Figma Design", d: "Browse the full design system" },
         { t: "API Access", d: "Read the REST API documentation" },
         { t: "GitHub Repository", d: "View source and contribute" },
@@ -457,7 +457,7 @@ const _translations = {
       protoTitle: "Прототип и доступ",
       protoLinks: [
         { t: "Живой прототип", d: "Взаимодействуйте с прототипом Verdiq" },
-        { t: "Концепция проекта", d: "Скачать официальный PDF концепт", href: "/VERDIQ LOYIHASI RASMIY KONSEPSIYASI.pdf" },
+        { t: "Концепция проекта", d: "Скачать официальный PDF концепт", href: "https://drive.google.com/file/d/1djI5bsQANg_6eoLTA7Vyl5g7mOlZcLu0/view?usp=sharing" },
         { t: "Дизайн в Figma", d: "Изучите дизайн-систему" },
         { t: "API-доступ", d: "Документация REST API" },
         { t: "GitHub-репозиторий", d: "Исходный код и контрибьюшны" },
@@ -714,7 +714,7 @@ const _translations = {
       protoTitle: "Prototip va kirish",
       protoLinks: [
         { t: "Jonli prototip", d: "Verdiq prototipi bilan ishlang" },
-        { t: "Loyiha konsepsiyasi", d: "Rasmiy PDF konsepsiyani yuklab oling", href: "/VERDIQ LOYIHASI RASMIY KONSEPSIYASI.pdf" },
+        { t: "Loyiha konsepsiyasi", d: "Rasmiy PDF konsepsiyani yuklab oling", href: "https://drive.google.com/file/d/1djI5bsQANg_6eoLTA7Vyl5g7mOlZcLu0/view?usp=sharing" },
         { t: "Figma dizayn", d: "Dizayn-tizimni ko'rib chiqing" },
         { t: "API kirish", d: "REST API hujjatlari" },
         { t: "GitHub repozitoriy", d: "Manba kod va hissa qo'shish" },
