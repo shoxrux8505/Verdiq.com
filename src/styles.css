@@ -316,3 +316,18 @@ html.light {
   to { opacity: 1; transform: translateY(0); }
 }
 .animate-fade-up { animation: fade-up 0.7s ease-out both; }
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 30s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}

@@ -5,7 +5,7 @@ interface Phase { p: string; t: string; items: string[] }
 interface Stage { t: string; d: string; status: string }
 interface Stat { v: string; t: string; d: string }
 interface Role { role: string; name: string }
-interface ProtoLink { t: string; d: string }
+interface ProtoLink { t: string; d: string; href?: string }
 
 export interface Translation {
   nav: { home: string; solution: string; team: string; roadmap: string; demo: string; contact: string };
@@ -17,6 +17,7 @@ export interface Translation {
   product: { title: string; subtitle: string; items: Item[] };
   team: { title: string; subtitle: string; strengths: Item[]; coreTitle: string; roles: Role[]; links: { github: string; linkedin: string; portfolio: string } };
   stack: { title: string; subtitle: string };
+  standards: { title: string };
   roadmap: { title: string; subtitle: string; stages: Stage[] };
   plan: { title: string; subtitle: string; phases: Phase[] };
   value: { title: string; subtitle: string; stats: Stat[] };
@@ -135,6 +136,9 @@ const _translations = {
       title: "Technology Stack",
       subtitle: "Modern, fast, AI-native — chosen to scale from prototype to platform.",
     },
+    standards: {
+      title: "Standards & Frameworks We Rely On",
+    },
     roadmap: {
       title: "Roadmap",
       subtitle: "From idea to launch — clear stages, real milestones.",
@@ -196,6 +200,7 @@ const _translations = {
       protoTitle: "Prototype & Access",
       protoLinks: [
         { t: "Live Prototype", d: "Interact with the Verdiq prototype" },
+        { t: "Project Concept", d: "Download the official PDF concept", href: "/VERDIQ LOYIHASI RASMIY KONSEPSIYASI.pdf" },
         { t: "Figma Design", d: "Browse the full design system" },
         { t: "API Access", d: "Read the REST API documentation" },
         { t: "GitHub Repository", d: "View source and contribute" },
@@ -388,6 +393,9 @@ const _translations = {
       title: "Технологический стек",
       subtitle: "Современный, быстрый, AI-native — чтобы расти от прототипа до платформы.",
     },
+    standards: {
+      title: "На какие стандарты мы опираемся",
+    },
     roadmap: {
       title: "Дорожная карта",
       subtitle: "От идеи к запуску — чёткие этапы и реальные вехи.",
@@ -423,7 +431,7 @@ const _translations = {
       title: "Свяжитесь с нами",
       subtitle: "Расскажите о команде — ответим в течение 48 часов.",
       name: "Ваше имя",
-      email: "Рабочая почта",
+      email: "t3859061@gmail.com",
       message: "Чем мы можем помочь?",
       send: "Отправить",
       sent: "Спасибо — скоро свяжемся.",
@@ -449,6 +457,7 @@ const _translations = {
       protoTitle: "Прототип и доступ",
       protoLinks: [
         { t: "Живой прототип", d: "Взаимодействуйте с прототипом Verdiq" },
+        { t: "Концепция проекта", d: "Скачать официальный PDF концепт", href: "/VERDIQ LOYIHASI RASMIY KONSEPSIYASI.pdf" },
         { t: "Дизайн в Figma", d: "Изучите дизайн-систему" },
         { t: "API-доступ", d: "Документация REST API" },
         { t: "GitHub-репозиторий", d: "Исходный код и контрибьюшны" },
@@ -641,6 +650,9 @@ const _translations = {
       title: "Texnologiya steki",
       subtitle: "Zamonaviy, tezkor, AI-native — prototipdan platformagacha o'sish uchun.",
     },
+    standards: {
+      title: "Biz tayanadigan standartlar",
+    },
     roadmap: {
       title: "Yo'l xaritasi",
       subtitle: "Goyadan ishga tushirishgacha — aniq bosqichlar, real vehalar.",
@@ -676,7 +688,7 @@ const _translations = {
       title: "Biz bilan bog'laning",
       subtitle: "Jamoangiz haqida ayting — 48 soat ichida javob beramiz.",
       name: "Ismingiz",
-      email: "Ish pochtasi",
+      email: "t3859061@gmail.com",
       message: "Qanday yordam bera olamiz?",
       send: "Yuborish",
       sent: "Rahmat — tez orada bog'lanamiz.",
@@ -702,6 +714,7 @@ const _translations = {
       protoTitle: "Prototip va kirish",
       protoLinks: [
         { t: "Jonli prototip", d: "Verdiq prototipi bilan ishlang" },
+        { t: "Loyiha konsepsiyasi", d: "Rasmiy PDF konsepsiyani yuklab oling", href: "/VERDIQ LOYIHASI RASMIY KONSEPSIYASI.pdf" },
         { t: "Figma dizayn", d: "Dizayn-tizimni ko'rib chiqing" },
         { t: "API kirish", d: "REST API hujjatlari" },
         { t: "GitHub repozitoriy", d: "Manba kod va hissa qo'shish" },

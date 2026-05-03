@@ -35,11 +35,11 @@ export function Footer() {
             {t.footer.contact}
           </h4>
           <a
-            href="mailto:hello@verdiq.ai"
+            href="mailto:t3859061@gmail.com"
             className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
           >
             <Mail className="h-4 w-4" />
-            hello@verdiq.ai
+            t3859061@gmail.com
           </a>
 
           <h4 className="mt-6 mb-4 text-xs font-semibold uppercase tracking-wider text-foreground/60">

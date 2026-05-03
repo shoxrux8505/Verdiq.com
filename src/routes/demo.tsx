@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import {
   Play, ExternalLink, Figma, Github, Code2,
-  ArrowLeft, Mail, Sparkles,
+  ArrowLeft, Mail, Sparkles, FileBarChart,
 } from "lucide-react";
 
 export const Route = createFileRoute("/demo")({
@@ -36,7 +36,7 @@ export const Route = createFileRoute("/demo")({
   }),
 });
 
-const PROTO_ICONS = [Play, Figma, Code2, Github];
+const PROTO_ICONS = [Play, FileBarChart, Figma, Code2, Github];
 
 function DemoPage() {
   const { t } = useI18n();
@@ -118,20 +118,38 @@ function DemoPage() {
               const isComingSoon = Icon === Figma || Icon === Github;
               return (
                 <Reveal key={p.t} delay={i * 80}>
-                  <button
-                    type="button"
-                    onClick={() => isComingSoon && setComingSoon(p.t)}
-                    className="group block h-full w-full overflow-hidden rounded-2xl border border-hairline bg-glass p-5 text-left backdrop-blur-xl transition hover:-translate-y-1 hover:border-cyan-glow/30"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-glow/20 to-green-glow/20 text-cyan-glow ring-1 ring-cyan-glow/20">
-                        <Icon className="h-4.5 w-4.5" />
+                  {p.href ? (
+                    <a
+                      href={p.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group block h-full w-full overflow-hidden rounded-2xl border border-hairline bg-glass p-5 text-left backdrop-blur-xl transition hover:-translate-y-1 hover:border-cyan-glow/30"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-glow/20 to-green-glow/20 text-cyan-glow ring-1 ring-cyan-glow/20">
+                          <Icon className="h-4.5 w-4.5" />
+                        </div>
+                        <ExternalLink className="h-3.5 w-3.5 text-muted-foreground transition group-hover:text-cyan-glow" />
                       </div>
-                      <ExternalLink className="h-3.5 w-3.5 text-muted-foreground transition group-hover:text-cyan-glow" />
-                    </div>
-                    <div className="mt-5 text-sm font-semibold text-foreground">{p.t}</div>
-                    <div className="mt-1 text-xs text-muted-foreground">{p.d}</div>
-                  </button>
+                      <div className="mt-5 text-sm font-semibold text-foreground">{p.t}</div>
+                      <div className="mt-1 text-xs text-muted-foreground">{p.d}</div>
+                    </a>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => isComingSoon && setComingSoon(p.t)}
+                      className="group block h-full w-full overflow-hidden rounded-2xl border border-hairline bg-glass p-5 text-left backdrop-blur-xl transition hover:-translate-y-1 hover:border-cyan-glow/30"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-glow/20 to-green-glow/20 text-cyan-glow ring-1 ring-cyan-glow/20">
+                          <Icon className="h-4.5 w-4.5" />
+                        </div>
+                        <ExternalLink className="h-3.5 w-3.5 text-muted-foreground transition group-hover:text-cyan-glow" />
+                      </div>
+                      <div className="mt-5 text-sm font-semibold text-foreground">{p.t}</div>
+                      <div className="mt-1 text-xs text-muted-foreground">{p.d}</div>
+                    </button>
+                  )}
                 </Reveal>
               );
             })}

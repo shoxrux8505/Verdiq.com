@@ -16,6 +16,7 @@ const Value = lazy(() => import("@/components/verdiq/Value").then((m) => ({ defa
 const Contact = lazy(() => import("@/components/verdiq/Contact").then((m) => ({ default: m.Contact })));
 const FinalCTA = lazy(() => import("@/components/verdiq/FinalCTA").then((m) => ({ default: m.FinalCTA })));
 const Showcase = lazy(() => import("@/components/verdiq/Showcase").then((m) => ({ default: m.Showcase })));
+const Standards = lazy(() => import("@/components/verdiq/Standards").then((m) => ({ default: m.Standards })));
 const FloatingChatbot = lazy(() => import("@/components/verdiq/FloatingChatbot").then((m) => ({ default: m.FloatingChatbot })));
 
 export const Route = createFileRoute("/")({
@@ -54,6 +55,8 @@ function HomePage() {
           <Team />
           <SectionDivider />
           <Stack />
+          <SectionDivider />
+          <Standards />
           <SectionDivider />
           <Roadmap />
           <SectionDivider />
